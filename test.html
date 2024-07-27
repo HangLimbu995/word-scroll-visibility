@@ -1,0 +1,259 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Document</title>
+        <style>
+       *,
+*:after,
+*:before {
+    box-sizing: border-box;
+}
+
+:root {
+    --font-size: clamp(2rem, 8vmin + 1rem, 4rem);
+    --line: color-mix(in lch, canvasText 15% , transparent);
+    --base: 0.4;
+    --accent: hsl(8 100% 55%);
+    --header-height: 100vh;
+    --overlay: color-mix(in lch, canvas 70%, transparent);
+    color-scheme: dark only;
+}
+html:not(:focus-within) {
+    scroll-behavior: smooth;
+}
+
+body {
+    min-height: 100vh;
+    font-family: 'SF Pro Text', 'SF Pro Icons', 'AOS Icons', 'Helvetica Neue', Helvetica, Arial, sans-serif, system-ui;
+    background: canvas;
+}
+
+body::before {
+    --size: 60px;
+    content: '';
+    height: 100vh;
+    width: 100vw;
+    position: fixed;
+    background: linear-gradient(90deg, var(--line) 1px, transparent 1px var(--size)) 50% 50% / var(--size) var(--size),
+                linear-gradient(var(--line) 1px, transparent 1px var(--size)) 50% 50% / var(--size) var(--size);
+    mask: linear-gradient(-15deg, transparent 40%, white);
+    top: 0;
+    transform-style: flat;
+    pointer-events: none;
+    z-index: -1;
+}
+        header{
+            position: relative;
+            width: 100%;
+            min-height: 100vh;
+            background-color: red;
+        }
+      
+        .f-div {
+            width: 100%;
+            height: 100vh;
+            position: sticky;
+            top: 0;
+            background: canvas;
+            opacity: 0.5;
+            display: grid;
+            place-items: center;
+        }
+        .s-div {
+            width: 100%;
+            position: relative;
+            height: 100vh;
+            background: rgba(0, 0, 0, 0.356);
+            translate: 0 -100%;
+            display: grid;
+            place-items: center;
+
+        }
+        .s-div h1 {
+            font-size: 3em;
+            font-weight: bold;
+        }
+        .s-div::before {
+            content: "";
+            position: absolute;
+            inset: 0;
+            translate: 0 100%;
+            background-color:  rgba(0, 0, 0, 0.356);
+        }
+        section {
+            min-height: 100vh;
+            width: 100%;
+            background-color: black;
+            color: white;
+        }
+
+        [data-split] {
+            font-size:  clamp(2rem, 8vmin + 1rem, 4rem);
+            font-weight: 600;
+        }
+
+        .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border-width: 0;
+}
+
+section:not(.reader) {
+    min-height: 100vh;
+    display: grid;
+    place-items:center;
+}
+
+        .content {
+            position: sticky;
+    top: 0;
+    min-height: 100vh;
+    width: 100ch;
+    padding: 2rem 0;
+    max-width: calc(100% - 4rem);
+    display: grid;
+    place-items: center;
+    margin: 0 auto;
+    line-height: 1;
+        }
+
+        .content span {
+          
+    opacity: calc(var(--base) + (var(--active)));
+    transition: opacity .9s ease-out;
+    -webkit-transition: opacity .9s ease-out;
+    -moz-transition: opacity .9s ease-out;
+    -ms-transition: opacity .9s ease-out;
+    -o-transition: opacity .9s ease-out;
+        }
+
+        .reader {
+            --thick: 0px;
+    outline: var(--thick) dashed var(--accent);
+    outline-offset: calc(var(--thick) * -1);
+    height: calc(((var(--ppc) * var(--content-length) + (var(--pad) * var(--buffer))) * 1px) + 100vh);
+        }
+
+
+
+
+
+        @supports (animation-timeline: scroll()) {
+@property --active {
+    inherits: true;
+    initial-value: 0;
+    syntax:'<number>';
+}
+
+.reader {
+    view-timeline: --reader block;
+}
+
+.content span {
+    animation: activate both steps(1);
+    animation-timeline: --reader;
+    animation-range:contain calc(((var(--start, 0) * var(--ppc)) * 1px))
+    contain calc(((var(--end, 0) * var(--ppc)) * 1px)) ;
+    --webkit-animation: activate both steps(1)
+
+}
+
+@keyframes activate{
+    to{
+        --active: 1;
+    }
+}
+
+            header {
+                animation: scale-down both ease-in;
+                animation-timeline: view();
+                view-timeline: --header;
+                animation-range: exit-crossing;
+            }
+
+            @keyframes scale-down {
+                to{
+                    scale: 0.8 0.8;
+                }
+            }
+        }
+    </style>
+    </head>
+    <body>
+        <header>
+            <div class="f-div">
+                <h1>Inner div</h1>
+            </div>
+            <div class="s-div">
+                <h1>Hello World</h1>
+            </div>
+        </header>
+        <section class="reader" id="read">
+            <div class="content">
+                <div class="sr-only">
+                    With CSS, you can do way more than you think. One of the
+                    most fun CSS
+                    animation APIs ever. A magical way to create scroll-driven
+                    animations
+                    without the need to touch JavaScript. Animations run off the
+                    main
+                    thread. And you can choose to use View Timelines or Scroll
+                    Timelines.
+                </div>
+                <div data-split aria-hidden="true">
+                    The little details that make your sites feel great. Combine
+                    sticky
+                    positioning with some scroll animation. With CSS, you can do
+                    way more
+                    than you think.
+                </div>
+            </div>
+        </section>
+
+        <script type="module">
+            import gsap from 'https://cdn.skypack.dev/gsap@3.12.0'
+import ScrollTrigger from 'https://cdn.skypack.dev/gsap@3.12.0/ScrollTrigger'
+
+const toSplit = document.querySelector('[data-split]')
+const content = toSplit.innerText
+const contentLength = content.length
+const PPC = 10 // Pixels per character...
+const BUFFER = 40
+
+document.documentElement.style.setProperty('--buffer', BUFFER)
+document.documentElement.style.setProperty('--ppc', PPC)
+document.documentElement.style.setProperty('--pad', 8)
+document.documentElement.style.setProperty('--content-length', contentLength + 2)
+
+const words = toSplit.innerText.split(' ')
+toSplit.innerHTML = ''
+// toSplit.style.setProperty('--ppc', PPC)
+let cumulation = 10
+words.forEach((word,index) => {
+    const text = Object.assign(document.createElement('span'), {
+        innerHTML: `<span>${word} </span>`,
+        style: `
+      --index: ${index};
+      --start: ${cumulation};
+      --end: ${cumulation + word.length};
+    `,
+    })
+
+    console.log('word',word,'index',index,'cumulation',cumulation,'word length',word.length)
+  text.dataset.index = index
+  text.dataset.start = cumulation
+  text.dataset.end = cumulation + word.length
+  cumulation += word.length + 1
+  toSplit.appendChild(text)
+})
+        </script>
+    </body>
+</html>
